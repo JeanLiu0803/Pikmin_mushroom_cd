@@ -281,6 +281,12 @@ h3 {
   filter: saturate(0.74);
 }
 
+.timer-card.is-ending-soon {
+  outline: 5px solid var(--red);
+  outline-offset: -5px;
+  box-shadow: 0 0 0 4px rgba(232, 95, 86, 0.18), 0 14px 30px rgba(232, 95, 86, 0.24);
+}
+
 .timer-card__top {
   position: relative;
   z-index: 1;

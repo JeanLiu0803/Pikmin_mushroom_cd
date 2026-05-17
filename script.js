@@ -240,6 +240,7 @@ function updateCard(timer, now) {
 
   const remainingSeconds = Math.max(0, Math.ceil((timer.endsAt - now) / 1000));
   card.querySelector(".countdown-time").textContent = formatDuration(remainingSeconds);
+  card.classList.toggle("is-ending-soon", remainingSeconds > 0 && remainingSeconds <= 60);
 
   if (remainingSeconds === 0) {
     if (!timer.finishedAt) {
