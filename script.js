@@ -35,7 +35,7 @@ function createTimerId() {
 
 function getStoredBufferMinutes() {
   const storedValue = Number(localStorage.getItem(BUFFER_STORAGE_KEY));
-  return Number.isFinite(storedValue) && storedValue >= 0 ? storedValue : DEFAULT_BUFFER_MINUTES;
+  return Number.isFinite(storedValue) && storedValue > 0 ? storedValue : DEFAULT_BUFFER_MINUTES;
 }
 
 function saveBufferMinutes(value) {
@@ -44,7 +44,7 @@ function saveBufferMinutes(value) {
 
 function getStoredFinishedVisibleSeconds() {
   const storedValue = Number(localStorage.getItem(FINISHED_VISIBLE_STORAGE_KEY));
-  return Number.isFinite(storedValue) && storedValue >= 0 ? storedValue : DEFAULT_FINISHED_VISIBLE_SECONDS;
+  return Number.isFinite(storedValue) && storedValue > 0 ? storedValue : DEFAULT_FINISHED_VISIBLE_SECONDS;
 }
 
 function saveFinishedVisibleSeconds(value) {
@@ -52,7 +52,7 @@ function saveFinishedVisibleSeconds(value) {
 }
 
 function getFinishedVisibleMs() {
-  const seconds = sanitizeNumber(finishedVisibleInput.value, 300);
+  const seconds = sanitizeNumber(finishedVisibleInput.value, 300, DEFAULT_FINISHED_VISIBLE_SECONDS, 1);
   finishedVisibleInput.value = seconds;
   return seconds * 1000;
 }
@@ -62,13 +62,17 @@ function getRandomCardBackground() {
   return CARD_BACKGROUNDS[index];
 }
 
-function sanitizeNumber(value, max = Infinity) {
-  const number = Math.floor(Number(value));
-  if (!Number.isFinite(number) || number < 0) {
-    return 0;
+function sanitizeNumber(value, max = Infinity, fallback = 0, min = 0) {
+  if (value === "") {
+    return fallback;
   }
 
-  return Math.min(number, max);
+  const number = Math.floor(Number(value));
+  if (!Number.isFinite(number)) {
+    return fallback;
+  }
+
+  return Math.min(Math.max(number, min), max);
 }
 
 function pad(value) {
@@ -80,7 +84,7 @@ function formatDuration(totalSeconds) {
   const minutes = Math.floor(safeSeconds / 60);
   const seconds = safeSeconds % 60;
 
-  return `${minutes}分 ${pad(seconds)}秒`;
+  return `${pad(minutes)}:${pad(seconds)}`;
 }
 
 function getInputSeconds() {
@@ -91,7 +95,7 @@ function getInputSeconds() {
 }
 
 function getBufferSeconds() {
-  const bufferMinutes = sanitizeNumber(bufferInput.value, 120);
+  const bufferMinutes = sanitizeNumber(bufferInput.value, 120, DEFAULT_BUFFER_MINUTES, 1);
   bufferInput.value = bufferMinutes;
   return bufferMinutes * 60;
 }
@@ -219,7 +223,7 @@ function addTimer(event) {
   event.preventDefault();
   formError.textContent = "";
 
-  const name = mushroomNameInput.value.trim() || "蘑菇";
+  const name = mushroomNameInput.value.trim() || "蘑菇 🍄";
   const originalSeconds = getInputSeconds();
   const bufferSeconds = getBufferSeconds();
 
@@ -249,6 +253,8 @@ function addTimer(event) {
 
   timerForm.reset();
   minutesInput.value = 10;
+  bufferInput.value = sanitizeNumber(bufferInput.value, 120, DEFAULT_BUFFER_MINUTES, 1);
+  finishedVisibleInput.value = sanitizeNumber(finishedVisibleInput.value, 300, DEFAULT_FINISHED_VISIBLE_SECONDS, 1);
   mushroomNameInput.focus();
 }
 
@@ -257,13 +263,13 @@ function initializeSettings() {
   finishedVisibleInput.value = getStoredFinishedVisibleSeconds();
 
   bufferInput.addEventListener("change", () => {
-    const bufferMinutes = sanitizeNumber(bufferInput.value, 120);
+    const bufferMinutes = sanitizeNumber(bufferInput.value, 120, DEFAULT_BUFFER_MINUTES, 1);
     bufferInput.value = bufferMinutes;
     saveBufferMinutes(bufferMinutes);
   });
 
   finishedVisibleInput.addEventListener("change", () => {
-    const visibleSeconds = sanitizeNumber(finishedVisibleInput.value, 300);
+    const visibleSeconds = sanitizeNumber(finishedVisibleInput.value, 300, DEFAULT_FINISHED_VISIBLE_SECONDS, 1);
     finishedVisibleInput.value = visibleSeconds;
     saveFinishedVisibleSeconds(visibleSeconds);
   });

@@ -271,7 +271,9 @@ h3 {
 
 .timer-card__status {
   display: inline-flex;
-  position: relative;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
   z-index: 1;
   width: fit-content;
   margin: 0;
@@ -320,10 +322,11 @@ h3 {
 }
 
 .countdown-time {
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
-  align-self: center;
-  justify-self: end;
   color: #050505;
   font-size: 2.9rem;
   font-weight: 950;
