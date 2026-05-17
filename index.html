@@ -10,13 +10,24 @@
   <main class="app-shell">
     <section class="hero" aria-labelledby="app-title">
       <div class="hero__copy">
-        <p class="eyebrow">Mushroom Dispatch</p>
-        <h1 id="app-title">Pikmin 蘑菇倒數</h1>
-        <p class="hero__text">預祝 搶蘑菇順利！！！。</p>
+        <p class="eyebrow">Pikmin bloom</p>
+        <h1 id="app-title">搶菇倒數計時器 🍄</h1>
+        <p class="hero__text">預祝 搶蘑菇順利！！！</p>
       </div>
       <div class="hero-art" aria-hidden="true">
         <img src="images/Pikmin_cover.png" alt="">
       </div>
+    </section>
+
+    <section class="timers-section" aria-labelledby="timers-title">
+      <div class="section-heading section-heading--row">
+        <div>
+          <h2 id="timers-title">目前覬覦的蘑菇 🍄</h2>
+          <p id="timer-count">目前沒有在看的蘑菇喔... QQ</p>
+        </div>
+      </div>
+
+      <div id="timers-list" class="timers-list" aria-live="polite"></div>
     </section>
 
     <section class="panel timer-form-panel" aria-labelledby="new-timer-title">
@@ -27,7 +38,7 @@
 
       <form id="timer-form" class="timer-form">
         <label class="field field--wide">
-          <span>蘑菇位置 / 名稱</span>
+          <span>蘑菇名稱</span>
           <input id="mushroom-name" type="text" maxlength="40" placeholder="未填寫時預設為蘑菇" autocomplete="off">
         </label>
 
@@ -41,28 +52,24 @@
       </form>
     </section>
 
-    <section class="timers-section" aria-labelledby="timers-title">
-      <div class="section-heading section-heading--row">
-        <div>
-          <h2 id="timers-title">目前覬覦的蘑菇 🍄</h2>
-          <p id="timer-count">目前沒有倒數計時。</p>
-        </div>
-      </div>
-
-      <div id="timers-list" class="timers-list" aria-live="polite"></div>
-    </section>
-
     <section class="panel settings-panel" aria-labelledby="settings-title">
       <div class="section-heading">
         <h2 id="settings-title">設定</h2>
-        <p>調整每次新增倒數時自動加上的緩衝時間。</p>
+        <p>調整每次新增倒數時自動加上的緩衝時間，以及完成後卡片停留多久。</p>
       </div>
 
-      <label class="field setting-field">
-        <span>緩衝時間（分鐘）</span>
-        <input id="buffer-minutes" type="number" inputmode="numeric" min="0" max="120" step="1">
-      </label>
-      <p class="settings-note">預設為 4 分鐘，設定會保存在這台裝置。</p>
+      <div class="settings-grid">
+        <label class="field setting-field">
+          <span>緩衝時間（分鐘）</span>
+          <input id="buffer-minutes" type="number" inputmode="numeric" min="0" max="120" step="1" value="4" placeholder="預設 4 分鐘">
+        </label>
+
+        <label class="field setting-field">
+          <span>完成後卡片消失時間（秒）</span>
+          <input id="finished-visible-seconds" type="number" inputmode="numeric" min="0" max="300" step="1" value="15">
+        </label>
+      </div>
+      <p class="settings-note">緩衝時間預設為 4 分鐘，完成後消失時間預設為 15 秒，設定會保存在這台裝置。</p>
     </section>
   </main>
 

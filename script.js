@@ -1,11 +1,21 @@
-const STORAGE_KEY = "pikminMushroomBufferMinutes";
+const BUFFER_STORAGE_KEY = "pikminMushroomBufferMinutes";
+const FINISHED_VISIBLE_STORAGE_KEY = "pikminMushroomFinishedVisibleSeconds";
 const DEFAULT_BUFFER_MINUTES = 4;
-const FINISHED_VISIBLE_MS = 15000;
+const DEFAULT_FINISHED_VISIBLE_SECONDS = 15;
+const CARD_BACKGROUNDS = [
+  "images/card/card01.png",
+  "images/card/card02.png",
+  "images/card/card03.png",
+  "images/card/card04.png",
+  "images/card/card05.png",
+  "images/card/card06.png"
+];
 
 const timerForm = document.querySelector("#timer-form");
 const mushroomNameInput = document.querySelector("#mushroom-name");
 const minutesInput = document.querySelector("#minutes");
 const bufferInput = document.querySelector("#buffer-minutes");
+const finishedVisibleInput = document.querySelector("#finished-visible-seconds");
 const timersList = document.querySelector("#timers-list");
 const timerCount = document.querySelector("#timer-count");
 const formError = document.querySelector("#form-error");
@@ -24,12 +34,32 @@ function createTimerId() {
 }
 
 function getStoredBufferMinutes() {
-  const storedValue = Number(localStorage.getItem(STORAGE_KEY));
+  const storedValue = Number(localStorage.getItem(BUFFER_STORAGE_KEY));
   return Number.isFinite(storedValue) && storedValue >= 0 ? storedValue : DEFAULT_BUFFER_MINUTES;
 }
 
 function saveBufferMinutes(value) {
-  localStorage.setItem(STORAGE_KEY, String(value));
+  localStorage.setItem(BUFFER_STORAGE_KEY, String(value));
+}
+
+function getStoredFinishedVisibleSeconds() {
+  const storedValue = Number(localStorage.getItem(FINISHED_VISIBLE_STORAGE_KEY));
+  return Number.isFinite(storedValue) && storedValue >= 0 ? storedValue : DEFAULT_FINISHED_VISIBLE_SECONDS;
+}
+
+function saveFinishedVisibleSeconds(value) {
+  localStorage.setItem(FINISHED_VISIBLE_STORAGE_KEY, String(value));
+}
+
+function getFinishedVisibleMs() {
+  const seconds = sanitizeNumber(finishedVisibleInput.value, 300);
+  finishedVisibleInput.value = seconds;
+  return seconds * 1000;
+}
+
+function getRandomCardBackground() {
+  const index = Math.floor(Math.random() * CARD_BACKGROUNDS.length);
+  return CARD_BACKGROUNDS[index];
 }
 
 function sanitizeNumber(value, max = Infinity) {
@@ -78,10 +108,37 @@ function updateTimerCount() {
   timerCount.textContent = `進行中 ${runningCount} 個，完成待移除 ${finishedCount} 個。`;
 }
 
+function getSortedTimers() {
+  return [...timers].sort((firstTimer, secondTimer) => {
+    const firstFinished = Boolean(firstTimer.finishedAt);
+    const secondFinished = Boolean(secondTimer.finishedAt);
+
+    if (firstFinished !== secondFinished) {
+      return firstFinished ? 1 : -1;
+    }
+
+    if (firstFinished && secondFinished) {
+      return firstTimer.finishedAt - secondTimer.finishedAt;
+    }
+
+    return firstTimer.endsAt - secondTimer.endsAt;
+  });
+}
+
+function sortTimerCards() {
+  getSortedTimers().forEach((timer) => {
+    const card = timersList.querySelector(`[data-timer-id="${timer.id}"]`);
+    if (card) {
+      timersList.append(card);
+    }
+  });
+}
+
 function createTimerCard(timer) {
   const card = timerTemplate.content.firstElementChild.cloneNode(true);
 
   card.dataset.timerId = timer.id;
+  card.style.setProperty("--card-bg", `url("${timer.cardBackground}")`);
   card.querySelector(".timer-card__name").textContent = timer.name;
 
   card.querySelector(".delete-button").addEventListener("click", () => {
@@ -98,7 +155,7 @@ function renderEmptyState() {
 
   const emptyState = document.createElement("div");
   emptyState.className = "empty-state";
-  emptyState.textContent = "還沒有派出的 Pikmin 小隊，新增一個蘑菇倒數吧。";
+  emptyState.textContent = "新增一個正在覬覦的蘑菇倒數吧嘿嘿！";
   timersList.append(emptyState);
 }
 
@@ -126,7 +183,8 @@ function updateCard(timer, now) {
   if (remainingSeconds === 0) {
     if (!timer.finishedAt) {
       timer.finishedAt = now;
-      window.setTimeout(() => removeTimer(timer.id), FINISHED_VISIBLE_MS);
+      window.setTimeout(() => removeTimer(timer.id), getFinishedVisibleMs());
+      sortTimerCards();
     }
 
     card.classList.add("is-finished");
@@ -139,6 +197,7 @@ function updateCard(timer, now) {
 function tick() {
   const now = Date.now();
   timers.forEach((timer) => updateCard(timer, now));
+  sortTimerCards();
   updateTimerCount();
   manageTicker();
 }
@@ -175,6 +234,7 @@ function addTimer(event) {
     name,
     originalSeconds,
     bufferSeconds,
+    cardBackground: getRandomCardBackground(),
     endsAt: Date.now() + (originalSeconds + bufferSeconds) * 1000,
     finishedAt: null
   };
@@ -183,6 +243,7 @@ function addTimer(event) {
   timers.push(timer);
   createTimerCard(timer);
   updateCard(timer, Date.now());
+  sortTimerCards();
   updateTimerCount();
   manageTicker();
 
@@ -193,11 +254,18 @@ function addTimer(event) {
 
 function initializeSettings() {
   bufferInput.value = getStoredBufferMinutes();
+  finishedVisibleInput.value = getStoredFinishedVisibleSeconds();
 
   bufferInput.addEventListener("change", () => {
     const bufferMinutes = sanitizeNumber(bufferInput.value, 120);
     bufferInput.value = bufferMinutes;
     saveBufferMinutes(bufferMinutes);
+  });
+
+  finishedVisibleInput.addEventListener("change", () => {
+    const visibleSeconds = sanitizeNumber(finishedVisibleInput.value, 300);
+    finishedVisibleInput.value = visibleSeconds;
+    saveFinishedVisibleSeconds(visibleSeconds);
   });
 }
 
