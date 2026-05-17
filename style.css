@@ -184,24 +184,53 @@ h3 {
 }
 
 .name-tag {
+  display: inline-flex;
+  align-items: center;
   max-width: 100%;
   border: 1px solid rgba(79, 138, 66, 0.18);
   border-radius: 999px;
-  padding: 6px 10px;
   color: var(--leaf-dark);
   background: rgba(238, 246, 223, 0.78);
-  cursor: pointer;
   font-size: 0.82rem;
   font-weight: 900;
   line-height: 1.2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .name-tag:hover {
   filter: brightness(0.98);
   transform: translateY(-1px);
+}
+
+.name-tag__label,
+.name-tag__remove {
+  border: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+}
+
+.name-tag__label {
+  min-width: 0;
+  padding: 6px 6px 6px 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name-tag__remove {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  min-height: 26px;
+  border-left: 1px solid rgba(79, 138, 66, 0.16);
+  color: #884038;
+  font-size: 0.78rem;
+}
+
+.name-tag__remove:hover {
+  background: rgba(232, 95, 86, 0.12);
 }
 
 .primary-button,

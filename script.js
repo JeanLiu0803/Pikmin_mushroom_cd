@@ -80,17 +80,36 @@ function renderNameTags() {
   nameTags.innerHTML = "";
 
   savedNameTags.forEach((tag) => {
-    const button = document.createElement("button");
-    button.className = "name-tag";
-    button.type = "button";
-    button.textContent = tag;
-    button.addEventListener("click", () => {
+    const tagItem = document.createElement("span");
+    const applyButton = document.createElement("button");
+    const removeButton = document.createElement("button");
+
+    tagItem.className = "name-tag";
+    applyButton.className = "name-tag__label";
+    applyButton.type = "button";
+    applyButton.textContent = tag;
+    applyButton.addEventListener("click", () => {
       mushroomNameInput.value = tag;
       mushroomNameInput.focus();
     });
 
-    nameTags.append(button);
+    removeButton.className = "name-tag__remove";
+    removeButton.type = "button";
+    removeButton.textContent = "x";
+    removeButton.setAttribute("aria-label", `移除 ${tag}`);
+    removeButton.addEventListener("click", () => {
+      removeNameTag(tag);
+    });
+
+    tagItem.append(applyButton, removeButton);
+    nameTags.append(tagItem);
   });
+}
+
+function removeNameTag(tagToRemove) {
+  savedNameTags = savedNameTags.filter((tag) => tag !== tagToRemove);
+  saveNameTags(savedNameTags);
+  renderNameTags();
 }
 
 function rememberNameTag(name) {
