@@ -144,7 +144,7 @@ h3 {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) 180px auto;
   gap: 16px;
-  align-items: end;
+  align-items: start;
 }
 
 .field {
@@ -153,6 +153,10 @@ h3 {
   color: var(--leaf-dark);
   font-size: 0.9rem;
   font-weight: 800;
+}
+
+.timer-form > .primary-button {
+  margin-top: 29px;
 }
 
 .field input {
@@ -170,6 +174,34 @@ h3 {
 .field input:focus {
   border-color: var(--leaf);
   box-shadow: 0 0 0 4px rgba(79, 138, 66, 0.16);
+}
+
+.name-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 0;
+}
+
+.name-tag {
+  max-width: 100%;
+  border: 1px solid rgba(79, 138, 66, 0.18);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--leaf-dark);
+  background: rgba(238, 246, 223, 0.78);
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name-tag:hover {
+  filter: brightness(0.98);
+  transform: translateY(-1px);
 }
 
 .primary-button,

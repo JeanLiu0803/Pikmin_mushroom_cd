@@ -1,7 +1,9 @@
 const BUFFER_STORAGE_KEY = "pikminMushroomBufferMinutes";
 const FINISHED_VISIBLE_STORAGE_KEY = "pikminMushroomFinishedVisibleSeconds";
+const NAME_TAGS_STORAGE_KEY = "pikminMushroomNameTags";
 const DEFAULT_BUFFER_MINUTES = 4;
 const DEFAULT_FINISHED_VISIBLE_SECONDS = 15;
+const MAX_NAME_TAGS = 10;
 const CARD_BACKGROUNDS = [
   "images/card/card01.png",
   "images/card/card02.png",
@@ -16,6 +18,7 @@ const mushroomNameInput = document.querySelector("#mushroom-name");
 const minutesInput = document.querySelector("#minutes");
 const bufferInput = document.querySelector("#buffer-minutes");
 const finishedVisibleInput = document.querySelector("#finished-visible-seconds");
+const nameTags = document.querySelector("#name-tags");
 const timersList = document.querySelector("#timers-list");
 const timerCount = document.querySelector("#timer-count");
 const formError = document.querySelector("#form-error");
@@ -23,6 +26,7 @@ const timerTemplate = document.querySelector("#timer-card-template");
 
 let timers = [];
 let tickerId = null;
+let savedNameTags = [];
 
 function createTimerId() {
   // Use crypto when available, then fall back for older or file-based browsers.
@@ -49,6 +53,59 @@ function getStoredFinishedVisibleSeconds() {
 
 function saveFinishedVisibleSeconds(value) {
   localStorage.setItem(FINISHED_VISIBLE_STORAGE_KEY, String(value));
+}
+
+function getStoredNameTags() {
+  try {
+    const parsedTags = JSON.parse(localStorage.getItem(NAME_TAGS_STORAGE_KEY));
+    if (!Array.isArray(parsedTags)) {
+      return [];
+    }
+
+    return parsedTags
+      .filter((tag) => typeof tag === "string")
+      .map((tag) => tag.trim())
+      .filter(Boolean)
+      .slice(0, MAX_NAME_TAGS);
+  } catch {
+    return [];
+  }
+}
+
+function saveNameTags(tags) {
+  localStorage.setItem(NAME_TAGS_STORAGE_KEY, JSON.stringify(tags));
+}
+
+function renderNameTags() {
+  nameTags.innerHTML = "";
+
+  savedNameTags.forEach((tag) => {
+    const button = document.createElement("button");
+    button.className = "name-tag";
+    button.type = "button";
+    button.textContent = tag;
+    button.addEventListener("click", () => {
+      mushroomNameInput.value = tag;
+      mushroomNameInput.focus();
+    });
+
+    nameTags.append(button);
+  });
+}
+
+function rememberNameTag(name) {
+  const trimmedName = name.trim();
+  if (!trimmedName) {
+    return;
+  }
+
+  savedNameTags = [
+    trimmedName,
+    ...savedNameTags.filter((tag) => tag !== trimmedName)
+  ].slice(0, MAX_NAME_TAGS);
+
+  saveNameTags(savedNameTags);
+  renderNameTags();
 }
 
 function getFinishedVisibleMs() {
@@ -244,6 +301,7 @@ function addTimer(event) {
   };
 
   removeEmptyState();
+  rememberNameTag(name);
   timers.push(timer);
   createTimerCard(timer);
   updateCard(timer, Date.now());
@@ -261,6 +319,8 @@ function addTimer(event) {
 function initializeSettings() {
   bufferInput.value = getStoredBufferMinutes();
   finishedVisibleInput.value = getStoredFinishedVisibleSeconds();
+  savedNameTags = getStoredNameTags();
+  renderNameTags();
 
   bufferInput.addEventListener("change", () => {
     const bufferMinutes = sanitizeNumber(bufferInput.value, 120, DEFAULT_BUFFER_MINUTES, 1);
