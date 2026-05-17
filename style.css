@@ -99,57 +99,21 @@ h3 {
   font-size: 1.08rem;
 }
 
-.pikmin-garden {
-  position: relative;
-  height: 220px;
+.hero-art {
+  justify-self: end;
+  width: min(100%, 280px);
+  aspect-ratio: 1;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #eef6df;
+  box-shadow: 0 14px 28px rgba(70, 55, 24, 0.14);
 }
 
-.pikmin {
-  position: absolute;
-  bottom: 14px;
-  width: 62px;
-  height: 88px;
-  border-radius: 42% 42% 45% 45%;
-  box-shadow: inset -10px -12px rgba(0, 0, 0, 0.08);
-}
-
-.pikmin::before {
-  content: "";
-  position: absolute;
-  top: -52px;
-  left: 50%;
-  width: 4px;
-  height: 56px;
-  background: var(--leaf-dark);
-  transform: translateX(-50%);
-}
-
-.pikmin::after {
-  content: "";
-  position: absolute;
-  top: -68px;
-  left: 50%;
-  width: 34px;
-  height: 24px;
-  border-radius: 50% 10% 50% 10%;
-  background: var(--sprout);
-  transform: translateX(-38%) rotate(-18deg);
-}
-
-.pikmin--red {
-  left: 18px;
-  background: var(--red);
-}
-
-.pikmin--yellow {
-  right: 96px;
-  bottom: 34px;
-  background: var(--sun);
-}
-
-.pikmin--blue {
-  right: 18px;
-  background: var(--blue);
+.hero-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .panel,
@@ -182,7 +146,7 @@ h3 {
 
 .timer-form {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) minmax(300px, 0.8fr) auto;
+  grid-template-columns: minmax(220px, 1fr) 180px auto;
   gap: 16px;
   align-items: end;
 }
@@ -210,12 +174,6 @@ h3 {
 .field input:focus {
   border-color: var(--leaf);
   box-shadow: 0 0 0 4px rgba(79, 138, 66, 0.16);
-}
-
-.time-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
 }
 
 .primary-button,
@@ -251,7 +209,7 @@ h3 {
 
 .timers-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 16px;
 }
 
@@ -267,14 +225,16 @@ h3 {
 .timer-card {
   position: relative;
   display: grid;
-  gap: 18px;
-  min-height: 250px;
-  padding: 20px;
-  border: 1px solid var(--border);
-  border-radius: 20px;
+  align-content: space-between;
+  gap: 16px;
+  aspect-ratio: 1;
+  min-height: 180px;
+  padding: 18px;
+  border: 2px solid rgba(79, 138, 66, 0.2);
+  border-radius: 22px;
   background:
-    linear-gradient(180deg, rgba(255, 253, 246, 0.98), rgba(255, 250, 240, 0.96)),
-    radial-gradient(circle at top right, rgba(139, 195, 74, 0.22), transparent 14rem);
+    radial-gradient(circle at 88% 14%, rgba(247, 201, 72, 0.38), transparent 5rem),
+    linear-gradient(145deg, rgba(255, 253, 246, 0.98), rgba(238, 246, 223, 0.9));
   box-shadow: 0 12px 32px rgba(70, 55, 24, 0.1);
   overflow: hidden;
 }
@@ -282,13 +242,13 @@ h3 {
 .timer-card::before {
   content: "";
   position: absolute;
-  right: 16px;
-  bottom: 14px;
-  width: 48px;
-  height: 48px;
+  right: 14px;
+  bottom: 12px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   background: radial-gradient(circle at 36% 34%, #fff7dd 0 18%, #d76a57 19% 38%, #b94d42 39% 100%);
-  opacity: 0.18;
+  opacity: 0.14;
 }
 
 .timer-card.is-finished {
@@ -301,16 +261,23 @@ h3 {
   z-index: 1;
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   align-items: start;
 }
 
 .timer-card__name {
+  margin: 0;
+  padding-right: 4px;
+  font-size: clamp(1.05rem, 4vw, 1.35rem);
+  line-height: 1.25;
   word-break: break-word;
 }
 
 .timer-card__status {
   display: inline-flex;
+  position: relative;
+  z-index: 1;
+  width: fit-content;
   margin: 0;
   border-radius: 999px;
   padding: 5px 10px;
@@ -326,51 +293,28 @@ h3 {
 
 .delete-button {
   flex: 0 0 auto;
-  min-height: 38px;
-  padding: 0 12px;
+  min-height: 34px;
+  padding: 0 10px;
   color: #884038;
   background: #ffe4dd;
+  font-size: 0.82rem;
 }
 
 .countdown-time {
   position: relative;
   z-index: 1;
-  font-size: clamp(2.1rem, 8vw, 3.25rem);
+  align-self: center;
+  justify-self: center;
+  font-size: clamp(2rem, 7vw, 3.1rem);
   font-weight: 950;
-  line-height: 1;
+  line-height: 1.1;
   color: var(--leaf-dark);
   font-variant-numeric: tabular-nums;
+  text-align: center;
 }
 
 .is-finished .countdown-time {
   color: var(--red);
-}
-
-.timer-meta {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0;
-}
-
-.timer-meta div {
-  padding: 12px;
-  border-radius: 14px;
-  background: rgba(238, 246, 223, 0.72);
-}
-
-.timer-meta dt {
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
-.timer-meta dd {
-  margin: 4px 0 0;
-  font-weight: 950;
-  font-variant-numeric: tabular-nums;
 }
 
 .settings-panel {
@@ -398,13 +342,9 @@ h3 {
     padding: 26px 22px 18px;
   }
 
-  .pikmin-garden {
-    height: 130px;
-  }
-
-  .pikmin {
-    transform: scale(0.72);
-    transform-origin: bottom center;
+  .hero-art {
+    justify-self: start;
+    width: min(220px, 70vw);
   }
 
   .timer-form {
@@ -422,25 +362,15 @@ h3 {
     border-radius: 18px;
   }
 
-  .time-grid {
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-  }
-
   .field input {
     padding: 0 10px;
   }
 
   .timer-card__top {
-    align-items: stretch;
-    flex-direction: column;
+    align-items: start;
   }
 
   .delete-button {
-    width: 100%;
-  }
-
-  .timer-meta {
-    grid-template-columns: 1fr;
+    width: auto;
   }
 }

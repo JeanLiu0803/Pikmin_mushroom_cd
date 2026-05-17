@@ -4,9 +4,7 @@ const FINISHED_VISIBLE_MS = 15000;
 
 const timerForm = document.querySelector("#timer-form");
 const mushroomNameInput = document.querySelector("#mushroom-name");
-const hoursInput = document.querySelector("#hours");
 const minutesInput = document.querySelector("#minutes");
-const secondsInput = document.querySelector("#seconds");
 const bufferInput = document.querySelector("#buffer-minutes");
 const timersList = document.querySelector("#timers-list");
 const timerCount = document.querySelector("#timer-count");
@@ -49,23 +47,17 @@ function pad(value) {
 
 function formatDuration(totalSeconds) {
   const safeSeconds = Math.max(0, Math.floor(totalSeconds));
-  const hours = Math.floor(safeSeconds / 3600);
-  const minutes = Math.floor((safeSeconds % 3600) / 60);
+  const minutes = Math.floor(safeSeconds / 60);
   const seconds = safeSeconds % 60;
 
-  return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+  return `${minutes}分 ${pad(seconds)}秒`;
 }
 
 function getInputSeconds() {
-  const hours = sanitizeNumber(hoursInput.value, 999);
-  const minutes = sanitizeNumber(minutesInput.value, 59);
-  const seconds = sanitizeNumber(secondsInput.value, 59);
-
-  hoursInput.value = hours;
+  const minutes = sanitizeNumber(minutesInput.value, 999);
   minutesInput.value = minutes;
-  secondsInput.value = seconds;
 
-  return hours * 3600 + minutes * 60 + seconds;
+  return minutes * 60;
 }
 
 function getBufferSeconds() {
@@ -91,8 +83,6 @@ function createTimerCard(timer) {
 
   card.dataset.timerId = timer.id;
   card.querySelector(".timer-card__name").textContent = timer.name;
-  card.querySelector(".timer-card__original").textContent = formatDuration(timer.originalSeconds);
-  card.querySelector(".timer-card__buffer").textContent = `${formatDuration(timer.bufferSeconds)}（${Math.round(timer.bufferSeconds / 60)} 分）`;
 
   card.querySelector(".delete-button").addEventListener("click", () => {
     removeTimer(timer.id);
@@ -170,19 +160,13 @@ function addTimer(event) {
   event.preventDefault();
   formError.textContent = "";
 
-  const name = mushroomNameInput.value.trim();
+  const name = mushroomNameInput.value.trim() || "蘑菇";
   const originalSeconds = getInputSeconds();
   const bufferSeconds = getBufferSeconds();
 
-  if (!name) {
-    formError.textContent = "請輸入蘑菇位置或名稱。";
-    mushroomNameInput.focus();
-    return;
-  }
-
   if (originalSeconds <= 0) {
-    formError.textContent = "剩餘時間至少要大於 0 秒。";
-    secondsInput.focus();
+    formError.textContent = "剩餘分鐘至少要大於 0。";
+    minutesInput.focus();
     return;
   }
 
@@ -203,9 +187,7 @@ function addTimer(event) {
   manageTicker();
 
   timerForm.reset();
-  hoursInput.value = 0;
-  minutesInput.value = 0;
-  secondsInput.value = 0;
+  minutesInput.value = 10;
   mushroomNameInput.focus();
 }
 

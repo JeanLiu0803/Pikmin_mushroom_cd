@@ -12,41 +12,29 @@
       <div class="hero__copy">
         <p class="eyebrow">Mushroom Dispatch</p>
         <h1 id="app-title">Pikmin 蘑菇倒數</h1>
-        <p class="hero__text">幫每一場蘑菇戰留下緩衝時間，讓小隊準時回家。</p>
+        <p class="hero__text">預祝 搶蘑菇順利！！！。</p>
       </div>
-      <div class="pikmin-garden" aria-hidden="true">
-        <span class="pikmin pikmin--red"></span>
-        <span class="pikmin pikmin--yellow"></span>
-        <span class="pikmin pikmin--blue"></span>
+      <div class="hero-art" aria-hidden="true">
+        <img src="images/Pikmin_cover.png" alt="">
       </div>
     </section>
 
     <section class="panel timer-form-panel" aria-labelledby="new-timer-title">
       <div class="section-heading">
         <h2 id="new-timer-title">新增蘑菇計時</h2>
-        <p>輸入遊戲中顯示的剩餘時間，系統會自動加上緩衝時間。</p>
+        <p>輸入遊戲中顯示的剩餘分鐘，系統會自動加上緩衝時間。</p>
       </div>
 
       <form id="timer-form" class="timer-form">
         <label class="field field--wide">
           <span>蘑菇位置 / 名稱</span>
-          <input id="mushroom-name" type="text" maxlength="40" placeholder="例如：公園旁紅蘑菇" autocomplete="off" required>
+          <input id="mushroom-name" type="text" maxlength="40" placeholder="未填寫時預設為蘑菇" autocomplete="off">
         </label>
 
-        <div class="time-grid" aria-label="剩餘時間">
-          <label class="field">
-            <span>小時</span>
-            <input id="hours" type="number" inputmode="numeric" min="0" max="999" value="0">
-          </label>
-          <label class="field">
-            <span>分鐘</span>
-            <input id="minutes" type="number" inputmode="numeric" min="0" max="59" value="0">
-          </label>
-          <label class="field">
-            <span>秒</span>
-            <input id="seconds" type="number" inputmode="numeric" min="0" max="59" value="0">
-          </label>
-        </div>
+        <label class="field">
+          <span>剩餘分鐘</span>
+          <input id="minutes" type="number" inputmode="numeric" min="1" max="999" value="10">
+        </label>
 
         <button class="primary-button" type="submit">開始倒數</button>
         <p id="form-error" class="form-error" role="alert"></p>
@@ -56,7 +44,7 @@
     <section class="timers-section" aria-labelledby="timers-title">
       <div class="section-heading section-heading--row">
         <div>
-          <h2 id="timers-title">進行中的小隊</h2>
+          <h2 id="timers-title">目前覬覦的蘑菇 🍄</h2>
           <p id="timer-count">目前沒有倒數計時。</p>
         </div>
       </div>
@@ -81,25 +69,12 @@
   <template id="timer-card-template">
     <article class="timer-card">
       <div class="timer-card__top">
-        <div>
-          <h3 class="timer-card__name"></h3>
-          <p class="timer-card__status"></p>
-        </div>
+        <h3 class="timer-card__name"></h3>
         <button class="delete-button" type="button" aria-label="刪除計時器">刪除</button>
       </div>
 
       <div class="countdown-time" aria-label="目前倒數時間"></div>
-
-      <dl class="timer-meta">
-        <div>
-          <dt>原始時間</dt>
-          <dd class="timer-card__original"></dd>
-        </div>
-        <div>
-          <dt>緩衝時間</dt>
-          <dd class="timer-card__buffer"></dd>
-        </div>
-      </dl>
+      <p class="timer-card__status"></p>
     </article>
   </template>
 
